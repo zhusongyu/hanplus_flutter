@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'navigation_icon_view.dart';
-import '../screen/home.dart';
-import '../screen/buyspeed.dart';
-import '../screen/shopcart.dart';
-import '../screen/mine.dart';
+import '../screen/entry.dart';
+import '../screen/home.dart';
+import '../screen/buyspeed.dart';
+import '../screen/shopCart.dart';
+import '../screen/mine.dart';
 import '../shared/image_factory.dart';
 import '../shared/palette.dart';
 
