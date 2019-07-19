@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hanplus_flutter/screen/entry.dart';
+import 'package:hanplus_flutter/screen/entry.dart';
 import 'package:hanplus_flutter/screen/home.dart';
 import 'package:hanplus_flutter/routes/routes.dart';
 import 'package:hanplus_flutter/setup.dart';

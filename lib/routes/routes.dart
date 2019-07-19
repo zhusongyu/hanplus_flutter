@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hanplus_flutter/screen/entry.dart';
-import 'package:hanplus_flutter/screen/login.dart';
+import 'package:hanplus_flutter/screen/entry.dart';
+import 'package:hanplus_flutter/screen/login.dart';
 import '../index/index.dart';
 
 class RoutePaths {
