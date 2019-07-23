@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/rendering.dart';
+import 'package:hanplus_flutter/models/response/category_response_model.dart';
 import 'package:hanplus_flutter/shared/image_factory.dart';
 import 'dart:ui';
+import 'package:hanplus_flutter/services/hp_api_provider.dart';
 
 import 'package:hanplus_flutter/shared/palette.dart';
 
@@ -19,7 +21,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController textEditingController;
-  List<Widget> widgets;
+  CategoryResponseModel _categoryModels;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCategory();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,46 +46,41 @@ class _HomePageState extends State<HomePage> {
             child: ListView(
               scrollDirection: Axis.vertical,
               children: <Widget>[
-                Column(
+                Row(
                   children: <Widget>[
-                    Row(
+                    GestureDetector(
+                        child: Row(
                       children: <Widget>[
-                        GestureDetector(
-                            child: Row(
-                          children: <Widget>[
-                            Text(
-                              '台北',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  inherit: false),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            ImageFactory.more,
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              width: 300,
-                              child: TextField(
-                                // textAlignVertical: TextAlignVertical.bottom,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                                controller: textEditingController,
-                                decoration: InputDecoration(
-                                    hintText: "搜索商品关键词",
-                                    hintStyle: TextStyle(
-                                        color: Colors.white70, fontSize: 14),
-                                    icon: ImageFactory.search,
-                                    border: InputBorder.none),
-                              ),
-                            )
-                          ],
-                        )),
+                        Text(
+                          '台北',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              inherit: false),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        ImageFactory.more,
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          width: 300,
+                          child: TextField(
+                            // textAlignVertical: TextAlignVertical.bottom,
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                                hintText: "搜索商品关键词",
+                                hintStyle: TextStyle(
+                                    color: Colors.white70, fontSize: 14),
+                                icon: ImageFactory.search,
+                                border: InputBorder.none),
+                          ),
+                        )
                       ],
-                    )
+                    )),
                   ],
                 ),
                 Container(
@@ -98,16 +102,18 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                    height: 300,
-                    width: 300,
-                    child: Wrap(
-                      spacing: 20,
-                      children: <Widget>[
-                        _buildClassify(3, 'quanbu'),
-                        _buildClassify(2, 'quanbu'),
-                      ],
-                    ))
+                Wrap(
+                  alignment: WrapAlignment.start,
+                  spacing: 15,
+                  runSpacing: 10,
+                  children: _buildClassify(),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Column(
+                  children: _buildProductList(),
+                )
               ],
             ),
           )
@@ -116,112 +122,122 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildClassify(int index, String title) {
-    return ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(3)),
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              selectIndex = index;
-            });
-          },
-          child: Container(
-            width: 75,
-            height: 32,
-            color: Palette.veryLightPink,
-            child: Stack(
-              alignment: Alignment.center,
+  List<Widget> _buildClassify() {
+    List<Widget> widgets = [];
+    if (_categoryModels != null) {
+      _categoryModels.data.asMap().forEach((index, model) {
+        Widget child = ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(3)),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectIndex = index;
+                });
+              },
+              child: Container(
+                width: 75,
+                height: 32,
+                color: Palette.veryLightPink,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    selectIndex == index ? ImageFactory.allClassify : Text(""),
+                    Text(
+                      model.name,
+                      style: TextStyle(
+                          color: selectIndex == index
+                              ? Colors.white
+                              : Palette.black30,
+                          fontSize: 13),
+                    )
+                  ],
+                ),
+              ),
+            ));
+        widgets.add(child);
+      });
+    } else {
+      widgets.add(Text('dada'));
+    }
+    return widgets;
+  }
+
+  List<Widget> _buildProductList() {
+    List<Widget> widgets = [];
+    List arr = [1, 2];
+    arr.forEach((ele) {
+      Widget widget = Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(3)),
+            child: Column(
               children: <Widget>[
-                selectIndex == index ? ImageFactory.allClassify : Text(""),
-                Text(
-                  title,
-                  style: TextStyle(
-                      color:
-                          selectIndex == index ? Colors.white : Palette.black30,
-                      fontSize: 13),
+                Image.asset(
+                  'res/assets/banner01.png',
+                  fit: BoxFit.fill,
+                  height: 230,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('产品01',
+                          textAlign: TextAlign.left,
+                          style:
+                              TextStyle(fontSize: 18, color: Palette.blackTwo)),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text('NT118',
+                              style: TextStyle(
+                                  fontSize: 21, color: Palette.pastelRed)),
+                          SizedBox(
+                            width: 8.5,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 5, right: 5),
+                            decoration: BoxDecoration(
+                                color: Palette.tealBlue10,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: Text(
+                              '净值:22',
+                              style: TextStyle(
+                                  fontSize: 12, color: Palette.tealBlue),
+                            ),
+                          ),
+                          Spacer(),
+                          Image.asset(
+                            'res/assets/shopCart.png',
+                            fit: BoxFit.fill,
+                            height: 40,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
           ),
-        ));
+          SizedBox(
+            height: 15,
+          )
+        ],
+      );
+
+      widgets.add(widget);
+    });
+    return widgets;
+  }
+
+  getCategory() async {
+    CategoryResponseModel model = await HPAPIProvider().getCategory();
+    setState(() {
+      _categoryModels = model;
+    });
   }
 }
-
-// class Classify extends StatefulWidget {
-//   const Classify(Key key, this.index, this.title) : super(key: key);
-//   final int index;
-//   final String title;
-//   // final Key key;
-
-//   @override
-//   State createState() => _ClassifyState();
-
-// }
-
-// class _ClassifyState extends State<Classify> {
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     return ClipRRect(
-//         borderRadius: BorderRadius.all(Radius.circular(3)),
-//         child: GestureDetector(
-//           onTap: () {
-//             setState(() {
-//               selectIndex = widget.index;
-//             });
-//           },
-//           child: Container(
-//             width: 75,
-//             height: 32,
-//             color: Palette.veryLightPink,
-//             child: Stack(
-//               alignment: Alignment.center,
-//               children: <Widget>[
-//                 selectIndex == widget.index
-//                     ? ImageFactory.allClassify
-//                     : Text(""),
-//                 Text(
-//                   widget.title,
-//                   style: TextStyle(
-//                       color: selectIndex == widget.index
-//                           ? Colors.white
-//                           : Palette.black30,
-//                       fontSize: 13),
-//                 )
-//               ],
-//             ),
-//           ),
-//         ));
-//   }
-// }
-
-// class TestFlowDelegate extends FlowDelegate {
-//   EdgeInsets margin = EdgeInsets.zero;
-
-//   TestFlowDelegate({this.margin});
-//   @override
-//   void paintChildren(FlowPaintingContext context) {
-//     var x = margin.left;
-//     var y = margin.top;
-//     for (int i = 0; i < context.childCount; i++) {
-//       var w = context.getChildSize(i).width + x + margin.right;
-//       if (w < context.size.width) {
-//         context.paintChild(i,
-//             transform: new Matrix4.translationValues(x, y, 0.0));
-//         x = w + margin.left;
-//       } else {
-//         x = margin.left;
-//         y += context.getChildSize(i).height + margin.top + margin.bottom;
-//         context.paintChild(i,
-//             transform: new Matrix4.translationValues(x, y, 0.0));
-//         x += context.getChildSize(i).width + margin.left + margin.right;
-//       }
-//     }
-//   }
-
-//   @override
-//   bool shouldRepaint(FlowDelegate oldDelegate) {
-//     return oldDelegate != this;
-//   }
-// }
