@@ -54,23 +54,24 @@ flutter:
   assets:
     # assets-generator-begin
     # res/assets/*
-    - res/assets/.DS_Store
-    - res/assets/allClassify.png
-    - res/assets/banner01.png
-    - res/assets/bg.png
-    - res/assets/headBg.png
-    - res/assets/iconBack.png
-    - res/assets/logo.png
-    - res/assets/moreIcon.png
-    - res/assets/search.png
-    - res/assets/tabBarIconBuySpeed.png
-    - res/assets/tabBarIconBuySpeedSel.png
-    - res/assets/tabBarIconHome.png
-    - res/assets/tabBarIconHomeSel.png
-    - res/assets/tabBarIconMine.png
-    - res/assets/tabBarIconMineSel.png
-    - res/assets/tabBarIconShoppingCart.png
-    - res/assets/tabBarIconShoppingCartSel.png
+        - res/assets/
+    # - res/assets/.DS_Store
+    # - res/assets/allClassify.png
+    # - res/assets/banner01.png
+    # - res/assets/bg.png
+    # - res/assets/headBg.png
+    # - res/assets/iconBack.png
+    # - res/assets/logo.png
+    # - res/assets/moreIcon.png
+    # - res/assets/search.png
+    # - res/assets/tabBarIconBuySpeed.png
+    # - res/assets/tabBarIconBuySpeedSel.png
+    # - res/assets/tabBarIconHome.png
+    # - res/assets/tabBarIconHomeSel.png
+    # - res/assets/tabBarIconMine.png
+    # - res/assets/tabBarIconMineSel.png
+    # - res/assets/tabBarIconShoppingCart.png
+    # - res/assets/tabBarIconShoppingCartSel.png
     # assets-generator-end
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
