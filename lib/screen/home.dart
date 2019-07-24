@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hanplus_flutter/models/response/category_response_model.dart';
+import 'package:hanplus_flutter/models/response/product_response_model.dart';
 import 'package:hanplus_flutter/shared/image_factory.dart';
 import 'dart:ui';
 import 'package:hanplus_flutter/services/hp_api_provider.dart';
@@ -22,18 +24,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController textEditingController;
   CategoryResponseModel _categoryModels;
+  ProductResponseModel _productModels;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getCategory();
+    getProduct();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Material(
+      color: Palette.whiteThree,
       child: Stack(
         children: <Widget>[
           Image.asset(
@@ -163,74 +168,80 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> _buildProductList() {
-    List<Widget> widgets = [];
-    List arr = [1, 2];
-    arr.forEach((ele) {
-      Widget widget = Column(
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(3)),
-            child: Column(
-              children: <Widget>[
-                Image.asset(
-                  'res/assets/banner01.png',
-                  fit: BoxFit.fill,
-                  height: 230,
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('产品01',
-                          textAlign: TextAlign.left,
-                          style:
-                              TextStyle(fontSize: 18, color: Palette.blackTwo)),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text('NT118',
-                              style: TextStyle(
-                                  fontSize: 21, color: Palette.pastelRed)),
-                          SizedBox(
-                            width: 8.5,
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(left: 5, right: 5),
-                            decoration: BoxDecoration(
-                                color: Palette.tealBlue10,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            child: Text(
-                              '净值:22',
-                              style: TextStyle(
-                                  fontSize: 12, color: Palette.tealBlue),
-                            ),
-                          ),
-                          Spacer(),
-                          Image.asset(
-                            'res/assets/shopCart.png',
-                            fit: BoxFit.fill,
-                            height: 40,
-                          ),
-                        ],
-                      )
-                    ],
+    List<Widget> widgets = [Text('')];
+    if (_productModels != null) {
+      _productModels.data.forEach((ele) {
+        Widget widget = Column(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: Column(
+                children: <Widget>[
+                  CachedNetworkImage(
+                    fit: BoxFit.fitWidth,
+                    height: 230,
+                    width: width,
+                    imageUrl: ele.picture,
+                    placeholder: (context, url) =>
+                        new CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => new Icon(Icons.error),
                   ),
-                )
-              ],
+                  Container(
+                    padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
+                    color: Colors.white,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(ele.name,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontSize: 18, color: Palette.blackTwo)),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text('NT\$${ele.price}',
+                                style: TextStyle(
+                                    fontSize: 21, color: Palette.pastelRed)),
+                            SizedBox(
+                              width: 8.5,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              decoration: BoxDecoration(
+                                  color: Palette.tealBlue10,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: Text(
+                                '净值:22',
+                                style: TextStyle(
+                                    fontSize: 12, color: Palette.tealBlue),
+                              ),
+                            ),
+                            Spacer(),
+                            Image.asset(
+                              'res/assets/shopCart.png',
+                              fit: BoxFit.fill,
+                              height: 40,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 15,
-          )
-        ],
-      );
+            SizedBox(
+              height: 15,
+            )
+          ],
+        );
+        widgets.add(widget);
+      });
+    }
 
-      widgets.add(widget);
-    });
     return widgets;
   }
 
@@ -238,6 +249,13 @@ class _HomePageState extends State<HomePage> {
     CategoryResponseModel model = await HPAPIProvider().getCategory();
     setState(() {
       _categoryModels = model;
+    });
+  }
+
+  getProduct() async {
+    ProductResponseModel model = await HPAPIProvider().getProduct();
+    setState(() {
+      _productModels = model;
     });
   }
 }
