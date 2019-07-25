@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:hanplus_flutter/cache/shared_pref.dart';
 import 'package:hanplus_flutter/manager/user_manager.dart';
 import 'package:hanplus_flutter/models/response/category_response_model.dart';
+import 'package:hanplus_flutter/models/response/decoration_response_model.dart';
 import 'package:hanplus_flutter/models/response/login_response_model.dart';
 import 'package:hanplus_flutter/models/response/product_response_model.dart';
 import 'package:hanplus_flutter/models/response/user_response_model.dart';
@@ -54,8 +55,7 @@ class HPAPIProvider extends HPAPI {
           {"Authorization": 'Bearer $token'},
           Options(
               method: "GET",
-              contentType:
-                  ContentType.parse("application/x-www-form-urlencoded")));
+              contentType: ContentType.parse(HttpManager.CONTENT_TYPE_JSON)));
       int cc = response.code;
       var data = response.data;
       print('userreponse = $data');
@@ -76,41 +76,57 @@ class HPAPIProvider extends HPAPI {
         {"Authorization": 'Bearer $token'},
         Options(
             method: "GET",
-            contentType:
-                ContentType.parse("application/x-www-form-urlencoded")));
-    int cc = response.code;
+            contentType: ContentType.parse(HttpManager.CONTENT_TYPE_JSON)));
     var data = response.data;
     print('userreponse = $data');
     // print([CategoryResponseModel.fromJson(data)]);
     return Future.value(CategoryResponseModel.fromJson(data));
   }
 
-    Future<ProductResponseModel> getProduct([String categoryId, String keyword, String productIds]) async {
+  Future<ProductResponseModel> getProduct(
+      [int categoryId, String keyword, String productIds]) async {
     final SharedPref pref = await _pref;
     var token = pref.getToken();
-    var parameters = {};
-            if (categoryId != null) {
-            parameters["category_id"] = categoryId;
-        }
-        if (keyword != null) {
-            parameters["keyword"] = keyword;
-        }
-        if (productIds != null) {
-            parameters["product_ids"] = productIds;
-        }
+    var url = 'https://osorderapi.hanxiangyx.com/v1/products/product?region=HK';
+    if (categoryId != null) {
+      url = url + '&category_id=${categoryId.toString()}';
+    }
+    if (keyword != null) {
+      url = url + '&keyword=$keyword';
+    }
+    if (productIds != null) {
+      url = url + '&product_ids=$productIds';
+    }
 
     ResultData response = await httpManager.netFetch(
-        "https://osorderapi.hanxiangyx.com/v1/products/product",
-        parameters,
+        url,
+        null,
         {"Authorization": 'Bearer $token'},
         Options(
-            method: "GET",
-            contentType:
-                ContentType.parse("application/x-www-form-urlencoded")));
-    int cc = response.code;
+          method: "get",
+        ));
     var data = response.data;
     print('userreponse = $data');
     // print([CategoryResponseModel.fromJson(data)]);
     return Future.value(ProductResponseModel.fromJson(data));
+  }
+
+  Future<DecorationResponseModel> getDecoration(String name) async {
+    final SharedPref pref = await _pref;
+    var token = pref.getToken();
+    String url =
+        'https://osorderapi.hanxiangyx.com/v1/api/decorations/decoration?region=HK&name=$name';
+
+    ResultData response = await httpManager.netFetch(
+        url,
+        null,
+        {"Authorization": 'Bearer $token'},
+        Options(
+            method: "GET",
+            contentType: ContentType.parse(HttpManager.CONTENT_TYPE_JSON)));
+    var data = response.data;
+    print('userreponse = $data');
+    // print([CategoryResponseModel.fromJson(data)]);
+    return Future.value(DecorationResponseModel.fromJson(data));
   }
 }

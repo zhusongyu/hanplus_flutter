@@ -1,15 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hanplus_flutter/models/response/category_response_model.dart';
+import 'package:hanplus_flutter/models/response/decoration_response_model.dart';
 import 'package:hanplus_flutter/models/response/product_response_model.dart';
 import 'package:hanplus_flutter/shared/image_factory.dart';
 import 'dart:ui';
 import 'package:hanplus_flutter/services/hp_api_provider.dart';
 
 import 'package:hanplus_flutter/shared/palette.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../pull_to_refresh_layout/pull_to_refresh_layout.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 final width = window.physicalSize.width;
 final height = window.physicalSize.height;
@@ -23,8 +26,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController textEditingController;
-  CategoryResponseModel _categoryModels;
+  var _categoryModels =
+      CategoryResponseModel(data: [CategoryResponseDataModel(name: '全部')]);
   ProductResponseModel _productModels;
+  DecorationResponseModel _decorationModels;
+  ScrollController _scrollViewController;
 
   @override
   void initState() {
@@ -32,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getCategory();
     getProduct();
+    getDecoration('APP');
   }
 
   @override
@@ -47,83 +54,156 @@ class _HomePageState extends State<HomePage> {
             width: width / 2,
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    GestureDetector(
-                        child: Row(
-                      children: <Widget>[
-                        Text(
-                          '台北',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              inherit: false),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        ImageFactory.more,
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          width: 300,
-                          child: TextField(
-                            // textAlignVertical: TextAlignVertical.bottom,
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                            controller: textEditingController,
-                            decoration: InputDecoration(
-                                hintText: "搜索商品关键词",
-                                hintStyle: TextStyle(
-                                    color: Colors.white70, fontSize: 14),
-                                icon: ImageFactory.search,
-                                border: InputBorder.none),
-                          ),
-                        )
-                      ],
-                    )),
-                  ],
-                ),
-                Container(
-                  height: (width / 2 - 30) / 345 * 130,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      Image.asset(
-                        'res/assets/banner01.png',
-                        fit: BoxFit.fill,
-                      ),
-                      Image.asset(
-                        'res/assets/banner01.png',
-                        fit: BoxFit.fill,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Wrap(
-                  alignment: WrapAlignment.start,
-                  spacing: 15,
-                  runSpacing: 10,
-                  children: _buildClassify(),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Column(
-                  children: _buildProductList(),
-                )
-              ],
-            ),
-          )
+              padding: EdgeInsets.fromLTRB(15, 60, 15, 0),
+              child: _buildBody(context))
         ],
       ),
+    );
+  }
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
+
+  void _onRefresh() async {
+    // monitor network fetch
+    getProduct();
+    getCategory();
+    await Future.delayed(Duration(milliseconds: 2000));
+    // if failed,use refreshFailed()
+    // getCategory();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: WaterDropHeader(),
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus mode) {
+            Widget body;
+            if (mode == LoadStatus.idle) {
+              body = Text("pull up load");
+            } else if (mode == LoadStatus.loading) {
+              body = CupertinoActivityIndicator();
+            } else if (mode == LoadStatus.failed) {
+              body = Text("Load Failed!Click retry!");
+            } else {
+              body = Text("No more Data");
+            }
+            return Container(
+              height: 55.0,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: _buildListView(context));
+  }
+
+  Widget _buildHeadView() {
+    return Row(
+      children: <Widget>[
+        GestureDetector(
+            child: Row(
+          children: <Widget>[
+            Text(
+              '台北',
+              style:
+                  TextStyle(color: Colors.white, fontSize: 16, inherit: false),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            ImageFactory.more,
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              width: 300,
+              child: TextField(
+                // textAlignVertical: TextAlignVertical.bottom,
+                style: TextStyle(color: Colors.white, fontSize: 14),
+                controller: textEditingController,
+                decoration: InputDecoration(
+                    hintText: "搜索商品关键词",
+                    hintStyle: TextStyle(color: Colors.white70, fontSize: 14),
+                    icon: ImageFactory.search,
+                    border: InputBorder.none),
+              ),
+            )
+          ],
+        )),
+      ],
+    );
+  }
+
+  Widget _buildBannerView() {
+    return Swiper(
+      itemBuilder: (BuildContext context, int index) {
+        if (_decorationModels.sliders.length > 0) {
+          return CachedNetworkImage(
+            fit: BoxFit.fill,
+            // width: width,
+            height: (width / 2 - 30) / 345 * 130,
+            imageUrl: _decorationModels.sliders[index].imgUrl,
+            placeholder: (context, url) => new CircularProgressIndicator(),
+            errorWidget: (context, url, error) => new Icon(Icons.error),
+          );
+        } else {
+          return Image.asset(
+            'res/assets/banner01.png',
+            fit: BoxFit.fill,
+          );
+        }
+      },
+      itemCount: _decorationModels.sliders.length ?? 1,
+      viewportFraction: 1,
+      scale: 0.9,
+      autoplay: _decorationModels.sliders.length > 1 ? true : false,
+    );
+  }
+
+  Widget _buildListView(BuildContext context) {
+    return ListView(
+      scrollDirection: Axis.vertical,
+      children: <Widget>[
+        _buildHeadView(),
+        Container(
+            height: (width / 2 - 30) / 345 * 130, child: _buildBannerView()),
+        SizedBox(
+          height: 20,
+        ),
+        Wrap(
+          alignment: WrapAlignment.start,
+          spacing: 15,
+          runSpacing: 10,
+          children: _buildClassify(),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Column(
+          children: _buildProductList(),
+        )
+      ],
     );
   }
 
@@ -135,6 +215,7 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.all(Radius.circular(3)),
             child: GestureDetector(
               onTap: () {
+                getProduct(model.id);
                 setState(() {
                   selectIndex = index;
                 });
@@ -162,7 +243,7 @@ class _HomePageState extends State<HomePage> {
         widgets.add(child);
       });
     } else {
-      widgets.add(Text('dada'));
+      widgets.add(Text(''));
     }
     return widgets;
   }
@@ -246,16 +327,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   getCategory() async {
+    _categoryModels =
+        CategoryResponseModel(data: [CategoryResponseDataModel(name: '全部')]);
     CategoryResponseModel model = await HPAPIProvider().getCategory();
     setState(() {
-      _categoryModels = model;
+      _categoryModels.data.addAll(model.data);
     });
   }
 
-  getProduct() async {
-    ProductResponseModel model = await HPAPIProvider().getProduct();
+  getProduct([int categoryId, String keyword, String productIds]) async {
+    ProductResponseModel model =
+        await HPAPIProvider().getProduct(categoryId, keyword, productIds);
     setState(() {
       _productModels = model;
+    });
+  }
+
+  getDecoration(String name) async {
+    DecorationResponseModel model = await HPAPIProvider().getDecoration(name);
+    setState(() {
+      _decorationModels = model;
     });
   }
 }
