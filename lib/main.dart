@@ -4,6 +4,7 @@ import 'package:hanplus_flutter/screen/home.dart';
 import 'package:hanplus_flutter/routes/routes.dart';
 import 'package:hanplus_flutter/setup.dart';
 import 'package:hanplus_flutter/cache/shared_pref.dart';
+import 'package:hanplus_flutter/index/index.dart';
 
 void main() async {
   setupLog();
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: Index(),
       onGenerateRoute: Routes.generateRoute,
     );
   }
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
     final SharedPref pref = await _pref;
     var token = pref.getToken();
     if (token != null) {
-      return HomePage();
+      return Index();
     }
     return Entry();
   }
