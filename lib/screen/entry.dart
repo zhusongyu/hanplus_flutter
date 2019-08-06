@@ -4,6 +4,9 @@ import 'dart:ui';
 import 'package:hanplus_flutter/shared/palette.dart';
 import 'package:hanplus_flutter/routes/routes.dart';
 import 'package:hanplus_flutter/cache/shared_pref.dart';
+import 'package:hanplus_flutter/routes/routers.dart';
+import '../routes/application.dart';
+import 'package:fluro/fluro.dart';
 
   final width = window.physicalSize.width;
   final height = window.physicalSize.height;
@@ -36,7 +39,7 @@ class Entry extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushNamed(RoutePaths.Login);
+                          Application.router.navigateTo(context, Routes.Login, transition: TransitionType.inFromRight);
                     },
                     child: Container(
                       decoration: BoxDecoration(

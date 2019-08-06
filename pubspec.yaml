@@ -32,6 +32,10 @@ dependencies:
   cached_network_image: ^1.0.0
   pull_to_refresh: ^1.5.0
   flutter_swiper: ^1.1.6
+  flutter_webview_plugin: ^0.3.5
+  flutter_screenutil: ^0.5.3
+  decimal: ^0.3.0
+  fluro: ^1.5.1
 
 dev_dependencies:
   flutter_test:
@@ -57,24 +61,27 @@ flutter:
   assets:
     # assets-generator-begin
     # res/assets/*
-        - res/assets/
-    # - res/assets/.DS_Store
-    # - res/assets/allClassify.png
-    # - res/assets/banner01.png
-    # - res/assets/bg.png
-    # - res/assets/headBg.png
-    # - res/assets/iconBack.png
-    # - res/assets/logo.png
-    # - res/assets/moreIcon.png
-    # - res/assets/search.png
-    # - res/assets/tabBarIconBuySpeed.png
-    # - res/assets/tabBarIconBuySpeedSel.png
-    # - res/assets/tabBarIconHome.png
-    # - res/assets/tabBarIconHomeSel.png
-    # - res/assets/tabBarIconMine.png
-    # - res/assets/tabBarIconMineSel.png
-    # - res/assets/tabBarIconShoppingCart.png
-    # - res/assets/tabBarIconShoppingCartSel.png
+    - res/assets/.DS_Store
+    - res/assets/add.png
+    - res/assets/allClassify.png
+    - res/assets/banner01.png
+    - res/assets/bg.png
+    - res/assets/headBg.png
+    - res/assets/iconBack.png
+    - res/assets/logo.png
+    - res/assets/moreIcon.png
+    - res/assets/moreIconBlack.png
+    - res/assets/reduce.png
+    - res/assets/search.png
+    - res/assets/shopCart.png
+    - res/assets/tabBarIconBuySpeed.png
+    - res/assets/tabBarIconBuySpeedSel.png
+    - res/assets/tabBarIconHome.png
+    - res/assets/tabBarIconHomeSel.png
+    - res/assets/tabBarIconMine.png
+    - res/assets/tabBarIconMineSel.png
+    - res/assets/tabBarIconShoppingCart.png
+    - res/assets/tabBarIconShoppingCartSel.png
     # assets-generator-end
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

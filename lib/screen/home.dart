@@ -1,9 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hanplus_flutter/models/response/category_response_model.dart';
 import 'package:hanplus_flutter/models/response/decoration_response_model.dart';
 import 'package:hanplus_flutter/models/response/product_response_model.dart';
+import 'package:hanplus_flutter/routes/application.dart';
+import 'package:hanplus_flutter/routes/routes.dart';
+import 'package:hanplus_flutter/screen/detail.dart';
 import 'package:hanplus_flutter/shared/image_factory.dart';
 import 'dart:ui';
 import 'package:hanplus_flutter/services/hp_api_provider.dart';
@@ -13,10 +17,20 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../pull_to_refresh_layout/pull_to_refresh_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import '../screen/detail.dart';
+import 'package:hanplus_flutter/cache/shared_pref.dart';
+import '../routes/routers.dart';
 
-final width = window.physicalSize.width;
-final height = window.physicalSize.height;
+// final width = window.physicalSize.width;
+// final height = window.physicalSize.height;
 var selectIndex = 0;
+
+class RouteParamsOfDetail {
+  final ProductResponseDataModel model;
+  final String token;
+
+  RouteParamsOfDetail({@required this.model, @required this.token});
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -43,6 +57,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     // TODO: implement build
     return Material(
       color: Palette.whiteThree,
@@ -51,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           Image.asset(
             'res/assets/headBg.png',
             fit: BoxFit.fill,
-            width: width / 2,
+            width: width,
           ),
           Container(
               padding: EdgeInsets.fromLTRB(15, 60, 15, 0),
@@ -137,7 +154,7 @@ class _HomePageState extends State<HomePage> {
               width: 10,
             ),
             Container(
-              width: 300,
+              width: 200,
               child: TextField(
                 // textAlignVertical: TextAlignVertical.bottom,
                 style: TextStyle(color: Colors.white, fontSize: 14),
@@ -158,11 +175,9 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBannerView() {
     return Swiper(
       itemBuilder: (BuildContext context, int index) {
-        if (_decorationModels.sliders.length > 0) {
+        if (_decorationModels != null && _decorationModels.sliders.length > 0) {
           return CachedNetworkImage(
-            fit: BoxFit.fill,
-            // width: width,
-            height: (width / 2 - 30) / 345 * 130,
+            // fit: BoxFit.fitWidth,
             imageUrl: _decorationModels.sliders[index].imgUrl,
             placeholder: (context, url) => new CircularProgressIndicator(),
             errorWidget: (context, url, error) => new Icon(Icons.error),
@@ -170,24 +185,26 @@ class _HomePageState extends State<HomePage> {
         } else {
           return Image.asset(
             'res/assets/banner01.png',
-            fit: BoxFit.fill,
+            // fit: BoxFit.fitWidth,
           );
         }
       },
-      itemCount: _decorationModels.sliders.length ?? 1,
+      itemCount:
+          _decorationModels != null ? _decorationModels.sliders.length : 1,
       viewportFraction: 1,
       scale: 0.9,
-      autoplay: _decorationModels.sliders.length > 1 ? true : false,
+      autoplay: _decorationModels != null ? true : false,
     );
   }
 
   Widget _buildListView(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
     return ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
         _buildHeadView(),
-        Container(
-            height: (width / 2 - 30) / 345 * 130, child: _buildBannerView()),
+        Container(height: (width - 30) / 345 * 130, child: _buildBannerView()),
         SizedBox(
           height: 20,
         ),
@@ -201,7 +218,7 @@ class _HomePageState extends State<HomePage> {
           height: 15,
         ),
         Column(
-          children: _buildProductList(),
+          children: _buildProductList(context),
         )
       ],
     );
@@ -248,72 +265,84 @@ class _HomePageState extends State<HomePage> {
     return widgets;
   }
 
-  List<Widget> _buildProductList() {
+  List<Widget> _buildProductList(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     List<Widget> widgets = [Text('')];
     if (_productModels != null) {
       _productModels.data.forEach((ele) {
         Widget widget = Column(
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              child: Column(
-                children: <Widget>[
-                  CachedNetworkImage(
-                    fit: BoxFit.fitWidth,
-                    height: 230,
-                    width: width,
-                    imageUrl: ele.picture,
-                    placeholder: (context, url) =>
-                        new CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => new Icon(Icons.error),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
-                    color: Colors.white,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(ele.name,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontSize: 18, color: Palette.blackTwo)),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Row(
+            GestureDetector(
+                onTap: () {
+                  print('点击产品');
+                  pushToDetail(context, ele);
+                      // Navigator.pushNamed(context, RoutePaths.Detail);
+                  // Navigator.of(context).push(CupertinoPageRoute(builder: (_) => Detail()));
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    children: <Widget>[
+                      CachedNetworkImage(
+                        fit: BoxFit.fitWidth,
+                        height: 230,
+                        width: width,
+                        imageUrl: ele.picture,
+                        placeholder: (context, url) =>
+                            new CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            new Icon(Icons.error),
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(15, 20, 10, 10),
+                        color: Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text('NT\$${ele.price}',
+                            Text(ele.name,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    fontSize: 21, color: Palette.pastelRed)),
+                                    fontSize: 18, color: Palette.blackTwo)),
                             SizedBox(
-                              width: 8.5,
+                              height: 8,
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              decoration: BoxDecoration(
-                                  color: Palette.tealBlue10,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: Text(
-                                '净值:22',
-                                style: TextStyle(
-                                    fontSize: 12, color: Palette.tealBlue),
-                              ),
-                            ),
-                            Spacer(),
-                            Image.asset(
-                              'res/assets/shopCart.png',
-                              fit: BoxFit.fill,
-                              height: 40,
-                            ),
+                            Row(
+                              children: <Widget>[
+                                Text('NT\$${ele.price}',
+                                    style: TextStyle(
+                                        fontSize: 21,
+                                        color: Palette.pastelRed)),
+                                SizedBox(
+                                  width: 8.5,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(left: 5, right: 5),
+                                  decoration: BoxDecoration(
+                                      color: Palette.tealBlue10,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5))),
+                                  child: Text(
+                                    '净值:22',
+                                    style: TextStyle(
+                                        fontSize: 12, color: Palette.tealBlue),
+                                  ),
+                                ),
+                                Spacer(),
+                                Image.asset(
+                                  'res/assets/shopCart.png',
+                                  fit: BoxFit.fill,
+                                  height: 40,
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+                        ),
+                      )
+                    ],
+                  ),
+                )),
             SizedBox(
               height: 15,
             )
@@ -348,5 +377,15 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _decorationModels = model;
     });
+  }
+
+  pushToDetail(BuildContext context, ProductResponseDataModel model) async {
+    var _pref = SharedPref.create();
+
+    final SharedPref pref = await _pref;
+    var token = pref.getToken();
+    Application.router.navigateTo(context, '${Routes.Detail}?token=$token&id=${model.id.toString()}', transition: TransitionType.inFromRight);
+    // Navigator.pushNamed(context, RoutePaths.Detail,
+    //     arguments: RouteParamsOfDetail(model: model, token: token));
   }
 }
