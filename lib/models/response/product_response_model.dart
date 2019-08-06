@@ -20,6 +20,7 @@ class ProductResponseDataModel {
   String priceRmb;
   int stock;
   String vp;
+  int number;
 
   ProductResponseDataModel(
       {this.id,
@@ -29,7 +30,8 @@ class ProductResponseDataModel {
       this.price,
       this.priceRmb,
       this.stock,
-      this.vp});
+      this.vp,
+      this.number});
   factory ProductResponseDataModel.fromJson(Map<String, dynamic> json) =>
       new ProductResponseDataModel(
         id: json["id"],
@@ -40,5 +42,6 @@ class ProductResponseDataModel {
         priceRmb: json["priceRmb"],
         stock: json["stock"],
         vp: json["vp"],
+                number: 0,
       );
 }

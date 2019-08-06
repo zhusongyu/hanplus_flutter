@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hanplus_flutter/models/response/login_response_model.dart';
+import 'package:hanplus_flutter/routes/application.dart';
 import 'package:hanplus_flutter/setup.dart';
 import 'package:hanplus_flutter/shared/palette.dart';
 import 'package:hanplus_flutter/screen/entry.dart';
@@ -12,6 +13,7 @@ import 'package:hanplus_flutter/services/request.dart';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:hanplus_flutter/routes/routes.dart';
+import 'package:hanplus_flutter/routes/routers.dart';
 
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
@@ -96,7 +98,7 @@ class _LoginState extends State<Login> {
     HPAPIProvider().login(
         email: _nameTextEditController.text,
         password: _pwdTextEditController.text, callback: () {
-                                Navigator.of(context).pushNamed(RoutePaths.Index);
+          Application.router.navigateTo(context, Routes.Index);
 
         });
   }

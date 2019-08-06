@@ -7,6 +7,7 @@ import '../screen/shopCart.dart';
 import '../screen/mine.dart';
 import '../shared/image_factory.dart';
 import '../shared/palette.dart';
+import 'package:hanplus_flutter/routes/routes.dart';
 
 // import '../global_config.dart';
 
@@ -98,6 +99,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
       home: new Scaffold(
         body: new Center(child: _currentPage),
         bottomNavigationBar: bottomNavigationBar,
+        
       ),
       // theme: GlobalConfig.themeData
     );

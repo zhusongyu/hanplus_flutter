@@ -1,6 +1,8 @@
 class R {
   /// ![](http://127.0.0.1:9527/res/assets/.DS_Store)
   static final String resAssets = 'res/assets/.DS_Store';
+  /// ![](http://127.0.0.1:9527/res/assets/add.png)
+  static final String resAssetsAdd = 'res/assets/add.png';
   /// ![](http://127.0.0.1:9527/res/assets/allClassify.png)
   static final String resAssetsAllClassify = 'res/assets/allClassify.png';
   /// ![](http://127.0.0.1:9527/res/assets/banner01.png)
@@ -15,8 +17,14 @@ class R {
   static final String resAssetsLogo = 'res/assets/logo.png';
   /// ![](http://127.0.0.1:9527/res/assets/moreIcon.png)
   static final String resAssetsMoreIcon = 'res/assets/moreIcon.png';
+  /// ![](http://127.0.0.1:9527/res/assets/moreIconBlack.png)
+  static final String resAssetsMoreIconBlack = 'res/assets/moreIconBlack.png';
+  /// ![](http://127.0.0.1:9527/res/assets/reduce.png)
+  static final String resAssetsReduce = 'res/assets/reduce.png';
   /// ![](http://127.0.0.1:9527/res/assets/search.png)
   static final String resAssetsSearch = 'res/assets/search.png';
+  /// ![](http://127.0.0.1:9527/res/assets/shopCart.png)
+  static final String resAssetsShopCart = 'res/assets/shopCart.png';
   /// ![](http://127.0.0.1:9527/res/assets/tabBarIconBuySpeed.png)
   static final String resAssetsTabBarIconBuySpeed = 'res/assets/tabBarIconBuySpeed.png';
   /// ![](http://127.0.0.1:9527/res/assets/tabBarIconBuySpeedSel.png)
