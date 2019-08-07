@@ -73,6 +73,7 @@ flutter:
     - res/assets/moreIconBlack.png
     - res/assets/reduce.png
     - res/assets/search.png
+    - res/assets/selected.png
     - res/assets/shopCart.png
     - res/assets/tabBarIconBuySpeed.png
     - res/assets/tabBarIconBuySpeedSel.png
@@ -82,6 +83,7 @@ flutter:
     - res/assets/tabBarIconMineSel.png
     - res/assets/tabBarIconShoppingCart.png
     - res/assets/tabBarIconShoppingCartSel.png
+    - res/assets/unselect.png
     # assets-generator-end
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

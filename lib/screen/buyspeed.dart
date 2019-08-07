@@ -6,6 +6,7 @@ import 'package:hanplus_flutter/shared/image_factory.dart';
 import 'package:hanplus_flutter/services/hp_api_provider.dart';
 import 'package:hanplus_flutter/models/response/product_response_model.dart';
 import '../shared/palette.dart';
+import 'package:hanplus_flutter/cache/shared_pref.dart';
 
 class BuyspeedPage extends StatefulWidget {
   const BuyspeedPage({Key key}) : super(key: key);
@@ -15,6 +16,8 @@ class BuyspeedPage extends StatefulWidget {
 
 class _BuySpeedState extends State<BuyspeedPage> {
   ProductResponseModel _productModels;
+  var _pref = SharedPref.create();
+
   // var _productNumMap = {0: 0};
 
   @override
@@ -55,19 +58,23 @@ class _BuySpeedState extends State<BuyspeedPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.fromLTRB(15, 7, 15, 0),
-                        child: Text.rich(
-                          TextSpan(
-                            children: <TextSpan> [
-                              TextSpan(text: '合计：', style: TextStyle(color: Colors.black, fontSize: 15)),
-                              TextSpan(text: 'NT\$' + totalMoney(), style: TextStyle(color: Palette.pastelRed, fontSize: 15, fontWeight: FontWeight.w600))
-                            ]
-                          )
-                        )
-                        // Text(
-                        //   '合计：' + totalMoney(),
-                        // ),
-                      ),
+                          padding: EdgeInsets.fromLTRB(15, 7, 15, 0),
+                          child: Text.rich(TextSpan(children: <TextSpan>[
+                            TextSpan(
+                                text: '合计：',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 15)),
+                            TextSpan(
+                                text: 'NT\$' + totalMoney(),
+                                style: TextStyle(
+                                    color: Palette.pastelRed,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600))
+                          ]))
+                          // Text(
+                          //   '合计：' + totalMoney(),
+                          // ),
+                          ),
                       Padding(
                         padding: EdgeInsets.only(left: 15),
                         child: Text(
@@ -81,7 +88,7 @@ class _BuySpeedState extends State<BuyspeedPage> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    print('cd');
+                    saveProduct();
                   },
                   padding: EdgeInsets.all(0),
                   child: Container(
@@ -222,15 +229,25 @@ class _BuySpeedState extends State<BuyspeedPage> {
     return total.toString();
   }
 
-    String totalVp() {
+  String totalVp() {
     var total = Decimal.fromInt(0);
     if (_productModels != null) {
       _productModels.data.forEach((model) {
-        total =
-            total + Decimal.parse(model.vp) * Decimal.fromInt(model.number);
+        total = total + Decimal.parse(model.vp) * Decimal.fromInt(model.number);
       });
     }
 
     return total.toString();
+  }
+
+  saveProduct() async {
+    final SharedPref pref = await _pref;
+    ProductResponseModel newModels = ProductResponseModel(data: []);
+    _productModels.data.forEach((model) {
+      if (model.number > 0) {
+        newModels.data.add(model);
+      }
+    });
+    pref.saveProduct(newModels);
   }
 }
