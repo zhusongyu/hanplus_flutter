@@ -1,3 +1,4 @@
+import 'package:hanplus_flutter/models/response/product_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 typedef SharedPrefBuilder = Future<SharedPreferences> Function();
@@ -20,5 +21,17 @@ class SharedPref {
 
   removeToken() async {
     await _prefs.remove('token');
+  }
+
+  saveProduct(ProductResponseModel model) async {
+    await _prefs.setString('product', model.toRawJson());
+  }
+
+  ProductResponseModel getProduct() {
+    final value = _prefs.getString('product');
+    if (value != null) {
+      return ProductResponseModel.fromRawJson(value);
+    }
+    return null;
   }
 }

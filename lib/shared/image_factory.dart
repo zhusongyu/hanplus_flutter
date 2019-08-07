@@ -24,4 +24,7 @@ class ImageFactory {
         static final moreIconBlack = Image.asset('res/assets/moreIconBlack.png', width: 10, height: 7,);
         static final addIcon = Image.asset(R.resAssetsAdd);
         static final reduceIcon = Image.asset(R.resAssetsReduce);
+                static final unSelectIcon = Image.asset(R.resAssetsUnselect);
+                static final selectedIcon = Image.asset(R.resAssetsSelected);
+
 }

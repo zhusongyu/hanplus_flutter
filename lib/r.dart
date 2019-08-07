@@ -23,6 +23,8 @@ class R {
   static final String resAssetsReduce = 'res/assets/reduce.png';
   /// ![](http://127.0.0.1:9527/res/assets/search.png)
   static final String resAssetsSearch = 'res/assets/search.png';
+  /// ![](http://127.0.0.1:9527/res/assets/selected.png)
+  static final String resAssetsSelected = 'res/assets/selected.png';
   /// ![](http://127.0.0.1:9527/res/assets/shopCart.png)
   static final String resAssetsShopCart = 'res/assets/shopCart.png';
   /// ![](http://127.0.0.1:9527/res/assets/tabBarIconBuySpeed.png)
@@ -41,4 +43,6 @@ class R {
   static final String resAssetsTabBarIconShoppingCart = 'res/assets/tabBarIconShoppingCart.png';
   /// ![](http://127.0.0.1:9527/res/assets/tabBarIconShoppingCartSel.png)
   static final String resAssetsTabBarIconShoppingCartSel = 'res/assets/tabBarIconShoppingCartSel.png';
+  /// ![](http://127.0.0.1:9527/res/assets/unselect.png)
+  static final String resAssetsUnselect = 'res/assets/unselect.png';
 }

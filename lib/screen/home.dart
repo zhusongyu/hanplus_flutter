@@ -322,7 +322,7 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                       color: Palette.tealBlue10,
                                       borderRadius:
-                                          BorderRadius.all(Radius.circular(5))),
+                                          BorderRadius.all(Radius.circular(1))),
                                   child: Text(
                                     '净值:22',
                                     style: TextStyle(
