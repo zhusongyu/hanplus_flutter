@@ -22,6 +22,9 @@ class HPAPIProvider extends HPAPI {
       {String email, String password, VoidCallback callback}) async {
     final SharedPref pref = await _pref;
     // try {
+    var options = Options(
+            method: "POST",
+            contentType: ContentType.parse("application/x-www-form-urlencoded"));
     ResultData response = await httpManager.netFetch(
         "https://osorderapi.hanxiangyx.com/v1/users/login",
         {"email": email, "password": password},
@@ -29,10 +32,7 @@ class HPAPIProvider extends HPAPI {
           "User-Agent":
               "com.handeson.os/HanPlus/1.0.0-6 (iPhone; U; OS 12.2; en-GB)"
         },
-        Options(
-            method: "POST",
-            contentType:
-                ContentType.parse("application/x-www-form-urlencoded")));
+        options);
     var data = response.data;
     var token = LoginResponseModel.fromJson(data).token;
     pref.saveToken(token);

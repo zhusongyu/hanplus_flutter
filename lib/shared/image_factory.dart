@@ -18,13 +18,16 @@ class ImageFactory {
   static final tabShopCartSel =
       Image.asset('res/assets/tabBarIconShoppingCartSel.png');
   static final headBg = Image.asset('res/assets/headBg.png');
-    static final search = Image.asset('res/assets/search.png');
-        static final banner01 = Image.asset('res/assets/banner01.png');
-        static final allClassify = Image.asset('res/assets/allClassify.png');
-        static final moreIconBlack = Image.asset('res/assets/moreIconBlack.png', width: 10, height: 7,);
-        static final addIcon = Image.asset(R.resAssetsAdd);
-        static final reduceIcon = Image.asset(R.resAssetsReduce);
-                static final unSelectIcon = Image.asset(R.resAssetsUnselect);
-                static final selectedIcon = Image.asset(R.resAssetsSelected);
-
+  static final search = Image.asset('res/assets/search.png');
+  static final banner01 = Image.asset('res/assets/banner01.png');
+  static final allClassify = Image.asset('res/assets/allClassify.png');
+  static final moreIconBlack = Image.asset(
+    'res/assets/moreIconBlack.png',
+    width: 10,
+    height: 7,
+  );
+  static final addIcon = Image.asset(R.resAssetsAdd);
+  static final reduceIcon = Image.asset(R.resAssetsReduce);
+  static final unSelectIcon = Image.asset(R.resAssetsUnselect);
+  static final selectedIcon = Image.asset(R.resAssetsSelected);
 }
